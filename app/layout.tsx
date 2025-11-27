@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SegarKosan Dashboard", // Ubah title agar sesuai
+  title: "SegarKosan", // Ubah title agar sesuai
   description: "Monitoring Kualitas Udara & Bau",
 
   // --- INI KUNCI UTAMANYA ---
