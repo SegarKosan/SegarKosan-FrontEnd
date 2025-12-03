@@ -37,7 +37,7 @@ export const useSensorMonitoring = () => {
     }
 
     const WS_URL =
-      process.env.NEXT_PUBLIC_WS_URL || "wss://17036dcd4c93.ngrok-free.app/"; // Gunakan wss:// untuk production
+      process.env.NEXT_PUBLIC_WS_URL || "wss://e1483306c151.ngrok-free.app/"; // Gunakan wss:// untuk production
 
     const connectWS = () => {
       ws.current = new WebSocket(`${WS_URL}?token=${token}`);
