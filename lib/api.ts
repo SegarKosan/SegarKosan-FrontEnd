@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://segarkosan-backend.vercel.app"; // backend Express
+const API_URL = "https://segarkosan.testingfothink.my.id"; // backend Express
 
 export default axios.create({
   baseURL: API_URL,

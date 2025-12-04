@@ -37,7 +37,8 @@ export const useSensorMonitoring = () => {
     }
 
     const WS_URL =
-      process.env.NEXT_PUBLIC_WS_URL || "wss://segarkosan-backend.vercel.app/"; // Gunakan wss:// untuk production
+      process.env.NEXT_PUBLIC_WS_URL ||
+      "wss://segarkosan.testingfothink.my.id/"; // Gunakan wss:// untuk production
 
     const connectWS = () => {
       ws.current = new WebSocket(`${WS_URL}?token=${token}`);
