@@ -1,10 +1,13 @@
 import axios from "axios";
 
-const API_URL = "https://segarkosan.testingfothink.my.id"; // backend Express
+// Gunakan environment variable atau fallback ke localhost untuk development
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default axios.create({
   baseURL: API_URL,
   headers: {
     "Content-Type": "application/json",
   },
+  // Opsional: Tambahkan jika backend membutuhkan credentials (cookies)
+  // withCredentials: true, 
 });
