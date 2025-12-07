@@ -18,6 +18,7 @@ import StatCard from "./components/StatCard";
 import HistoryTable from "./components/HistoryTable";
 import OdorGauge from "./components/OdorGauge";
 import SensorChart from "./components/SensorChart"; // Import komponen baru
+import { useRouter } from "next/router"; // Next.js 12/13 (pages router)
 
 // Definisi Tipe Data Sensor
 interface SensorData {
