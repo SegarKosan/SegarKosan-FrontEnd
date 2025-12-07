@@ -1,17 +1,35 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import axios from "../../lib/api"; // Pastikan path ini benar
 import { setToken } from "../../lib/auth"; // Pastikan path ini benar
-import { useRouter } from "next/navigation";
-import Image from "next/image"; // Import Image dari Next.js
+import { useRouter, useSearchParams } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
+import { useGoogleLogin } from "@react-oauth/google";
 
-export default function LoginPage() {
+function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showExistingUserPopup, setShowExistingUserPopup] = useState(false);
+  
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const emailParam = searchParams.get("email");
+    const existingParam = searchParams.get("existing");
+
+    if (emailParam) {
+      setEmail(emailParam);
+    }
+
+    if (existingParam === "true") {
+      setShowExistingUserPopup(true);
+    }
+  }, [searchParams]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,17 +62,42 @@ export default function LoginPage() {
     }
   };
 
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        setIsLoading(true);
+        const res = await axios.post("/auth/google", {
+          token: tokenResponse.access_token,
+        });
+
+        const { token, user } = res.data.data;
+        setToken(token);
+        if (user) {
+          localStorage.setItem("user", JSON.stringify(user));
+        }
+        router.push("/dashboard");
+      } catch (err: any) {
+        console.error(err);
+        setError(
+          err.response?.data?.message || "Google Login gagal."
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    onError: () => {
+      setError("Google Login Failed");
+    },
+  });
+
   const handleGoogleLogin = () => {
-    // Logika Login Google (misalnya menggunakan Firebase atau NextAuth)
-    alert("Fitur Login Google belum dihubungkan ke Backend.");
-    // Contoh redirect jika menggunakan API backend untuk Google Auth:
-    // window.location.href = "http://localhost:5000/auth/google";
+    googleLogin();
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-slate-50 font-sans">
       {/* Background decoration (Optional) */}
-      <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-emerald-50 to-slate-50 -z-10" />
+      <div className="absolute top-0 left-0 w-full h-1/2 bg-linear-to-b from-emerald-50 to-slate-50 -z-10" />
 
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100 m-4">
         <div className="p-8">
@@ -126,15 +169,30 @@ export default function LoginPage() {
                   Lupa password?
                 </a>
               </div>
-              <input
-                type="password"
-                placeholder="••••••••"
-                className="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all placeholder:text-slate-400"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={isLoading}
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  className="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all placeholder:text-slate-400 pr-10"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                />
+                {password.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-all duration-200 animate-fade-in"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
+                  </button>
+                )}
+              </div>
             </div>
 
             <button
@@ -206,6 +264,40 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
+      {/* --- EXISTING USER POPUP --- */}
+      {showExistingUserPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 transform transition-all scale-100">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mb-4 text-amber-600">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-slate-800 mb-2">Akun Sudah Terdaftar</h3>
+              <p className="text-slate-600 text-sm mb-6">
+                Email <strong>{email}</strong> sudah terdaftar di sistem kami. Silakan login menggunakan password Anda.
+              </p>
+              <button
+                onClick={() => setShowExistingUserPopup(false)}
+                className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-xl transition-colors duration-200"
+              >
+                Mengerti, Lanjut Login
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen bg-slate-50">Loading...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }

@@ -40,7 +40,7 @@ export default function PWASplashScreen() {
   if (!isPWA || !showSplash) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white transition-opacity duration-500 ease-in-out">
+    <div className="fixed inset-0 z-9999 flex flex-col items-center justify-center bg-white transition-opacity duration-500 ease-in-out">
       <div className="flex flex-col items-center animate-fade-in">
         <div className="relative w-32 h-32 mb-6">
           <Image
@@ -52,14 +52,13 @@ export default function PWASplashScreen() {
           />
         </div>
         <h1 className="text-3xl font-bold text-emerald-600 mb-2 tracking-wide">SegarKosan</h1>
-        <p className="text-sm text-gray-500 mb-8">Smart Monitoring System</p>
+        <p className="text-sm text-gray-500 mb-8">Smart Kosan with Odor Detection</p>
         
         <div className="flex items-center space-x-2">
            <div className="w-3 h-3 bg-emerald-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
            <div className="w-3 h-3 bg-emerald-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
            <div className="w-3 h-3 bg-emerald-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
         </div>
-        <p className="text-xs text-gray-400 mt-4 animate-pulse">Booting System...</p>
       </div>
     </div>
   );

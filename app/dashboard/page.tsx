@@ -39,6 +39,7 @@ const getToken = () => {
 };
 
 export default function Dashboard() {
+  const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(true);
 
   // State untuk mengatur tampilan (Chart atau Table)
@@ -48,9 +49,10 @@ export default function Dashboard() {
     const token = getToken();
     if (!token) {
       console.log("No token found, redirecting...");
-      // Implement redirect logic here
+      setTimeout(() => setIsAuthorized(false), 0);
+      router.push("/login");
     }
-  }, []);
+  }, [router]);
 
   const { sensors, latest, loading, isConnected } = useSensorMonitoring();
 
