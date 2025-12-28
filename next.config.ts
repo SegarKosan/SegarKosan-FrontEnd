@@ -3,6 +3,14 @@ import withPWAInit from "next-pwa";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  async rewrites() {
+    return [
+      {
+        source: "/public/:path*",
+        destination: "/:path*",
+      },
+    ];
+  },
   // Konfigurasi lain Anda di sini...
 };
 
