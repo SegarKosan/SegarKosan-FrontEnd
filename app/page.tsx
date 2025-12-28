@@ -61,7 +61,7 @@ export default function Home() {
 
           <div className="flex gap-4">
             <a
-              href="https://github.com/SegarKosan/SegarKosan"
+              href="https://github.com/SegarKosan"
               target="_blank"
               rel="noreferrer"
               className="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 hover:text-teal-800 transition-colors"
@@ -91,7 +91,7 @@ export default function Home() {
               </div>
               <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight mb-6">
                 Udara Bersih untuk <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
+                <span className="text-transparent bg-clip-text bg-linear-to-r from-teal-600 to-emerald-500">
                   Anak Kos Cerdas
                 </span>
               </h1>
@@ -113,7 +113,7 @@ export default function Home() {
 
                 {/* Tombol ke GitHub (External Link) */}
                 <a
-                  href="https://github.com/SegarKosan/SegarKosan-FrontEnd"
+                  href="https://github.com/SegarKosan"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-8 py-3.5 rounded-full bg-white border border-slate-200 text-slate-700 font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
@@ -273,7 +273,7 @@ export default function Home() {
               </h3>
               <p className="text-slate-600 leading-relaxed">
                 Algoritma pintar yang mengkonversi data sensor menjadi skor
-                0-100. Ketahui kapan kamar Anda "Fresh" (0-30) atau butuh
+                0-100. Ketahui kapan kamar Anda &quot;Fresh&quot; (0-30) atau butuh
                 ventilasi (70+).
               </p>
             </div>
@@ -364,7 +364,7 @@ export default function Home() {
               </h2>
               <div className="space-y-6">
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold">
+                  <div className="shrink-0 w-8 h-8 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold">
                     1
                   </div>
                   <div>
@@ -376,7 +376,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold">
+                  <div className="shrink-0 w-8 h-8 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold">
                     2
                   </div>
                   <div>
@@ -390,7 +390,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold">
+                  <div className="shrink-0 w-8 h-8 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold">
                     3
                   </div>
                   <div>
@@ -402,7 +402,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold">
+                  <div className="shrink-0 w-8 h-8 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold">
                     4
                   </div>
                   <div>
@@ -505,7 +505,7 @@ export default function Home() {
                 Terms
               </a>
               <a
-                href="https://github.com/yourusername/SegarKosan"
+                href="https://github.com/SegarKosan"
                 className="hover:text-white transition-colors"
               >
                 <Github className="w-5 h-5" />
