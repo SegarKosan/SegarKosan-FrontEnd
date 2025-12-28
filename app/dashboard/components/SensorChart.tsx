@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useSyncExternalStore } from "react";
 import {
   ComposedChart,
   Line,
@@ -11,6 +11,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   Legend,
+  TooltipContentProps,
 } from "recharts";
 
 interface SensorData {
@@ -21,40 +22,66 @@ interface SensorData {
   timestamp: number;
 }
 
+type ChartDatum = {
+  temperature: number | null;
+  humidity: number | null;
+  heat_index: number | null;
+  co2: number | null;
+  timestamp: number;
+  timeStr: string;
+};
+
+const renderCustomTooltip = (
+  props: TooltipContentProps<number | null, string>
+): React.ReactNode => {
+  const { active, payload, label } = props;
+  if (active && payload && payload.length && label !== "") {
+    return (
+      <div className="bg-white p-3 border border-slate-100 shadow-xl rounded-xl text-xs z-50">
+        <p className="font-bold text-slate-700 mb-2">{label}</p>
+        <div className="flex flex-col gap-1">
+          {payload.map((entry, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <div
+                className="w-2 h-2 rounded-full"
+                style={{ backgroundColor: entry.color }}
+              />
+              <span className="text-slate-500 capitalize">{entry.name}:</span>
+              <span className="font-semibold text-slate-800">
+                {entry.value}
+                {entry.unit}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
+
 interface SensorChartProps {
   data: SensorData[];
 }
 
 export default function SensorChart({ data }: SensorChartProps) {
-  const [isMounted, setIsMounted] = useState(false);
-  // State untuk mengontrol animasi
-  const [enableAnimation, setEnableAnimation] = useState(true);
+  const isMounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   // Konstanta konfigurasi grafik
   const MAX_DATA_POINTS = 15;
   const MIN_DATA_POINTS = 10;
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  // LOGIKA CERDAS ANIMASI:
-  // 1. Jika data masih sedikit (sedang mengisi), AKTIFKAN animasi agar terlihat tumbuh.
-  // 2. Jika data sudah penuh (sliding window), MATIKAN animasi agar geseran terlihat tegas (tidak morphing).
-  useEffect(() => {
-    if (data.length <= MAX_DATA_POINTS) {
-      setEnableAnimation(true);
-    } else {
-      setEnableAnimation(false);
-    }
-  }, [data.length]);
+  const enableAnimation = data.length <= MAX_DATA_POINTS;
 
   const chartData = React.useMemo(() => {
     // 1. Ambil sebagian data terbaru sesuai batas maksimal
     const recentData = data.slice(0, MAX_DATA_POINTS);
 
     // 2. Format data: Reverse agar urut waktu dari kiri (lama) ke kanan (baru)
-    const formattedData = [...recentData].reverse().map((d) => ({
+    const formattedData: ChartDatum[] = [...recentData].reverse().map((d) => ({
       ...d,
       timeStr: new Date(d.timestamp).toLocaleTimeString("id-ID", {
         hour: "2-digit",
@@ -72,10 +99,10 @@ export default function SensorChart({ data }: SensorChartProps) {
         formattedData.push({
           timestamp: i, // Dummy ID
           timeStr: "", // Label kosong
-          temperature: null as any,
-          humidity: null as any,
-          heat_index: null as any,
-          co2: null as any,
+          temperature: null,
+          humidity: null,
+          heat_index: null,
+          co2: null,
         });
       }
     }
@@ -101,33 +128,6 @@ export default function SensorChart({ data }: SensorChartProps) {
       </div>
     );
   }
-
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length && label !== "") {
-      return (
-        <div className="bg-white p-3 border border-slate-100 shadow-xl rounded-xl text-xs z-50">
-          <p className="font-bold text-slate-700 mb-2">{label}</p>
-          <div className="flex flex-col gap-1">
-            {payload.map((entry: any, index: number) => (
-              <div key={index} className="flex items-center gap-2">
-                <div
-                  className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: entry.color }}
-                />
-                <span className="text-slate-500 capitalize">{entry.name}:</span>
-                <span className="font-semibold text-slate-800">
-                  {entry.value}
-                  {entry.unit}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-    }
-    return null;
-  };
-
   return (
     <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
@@ -203,7 +203,7 @@ export default function SensorChart({ data }: SensorChartProps) {
             />
 
             <Tooltip
-              content={<CustomTooltip />}
+              content={renderCustomTooltip}
               cursor={{ fill: "transparent" }}
             />
 

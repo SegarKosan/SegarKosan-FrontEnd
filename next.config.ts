@@ -10,7 +10,8 @@ const withPWA = withPWAInit({
   dest: "public", // Tujuan output service worker
   register: true, // Auto register service worker
   skipWaiting: true, // Auto update service worker jika ada versi baru
-  disable: false,
+  // Disable PWA in dev to avoid duplicate GenerateSW calls during HMR
+  disable: process.env.NODE_ENV === "development",
 });
 
 export default withPWA(nextConfig);

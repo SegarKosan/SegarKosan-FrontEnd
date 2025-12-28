@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import axios from "../../../lib/api";
 import { getToken } from "../../../lib/auth"; // Pastikan path ini benar
 import { SensorData } from "../utils";
 

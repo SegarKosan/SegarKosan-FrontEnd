@@ -2,10 +2,22 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import axios from "../../lib/api"; // Pastikan path ini benar
+import type { AxiosError } from "axios";
+import { isAxiosError } from "axios";
 import { setToken } from "../../lib/auth"; // Pastikan path ini benar
 import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import { useGoogleLogin } from "@react-oauth/google";
+
+type ApiError = AxiosError<{ message?: string }> | Error | unknown;
+
+const extractErrorMessage = (err: ApiError, fallback: string): string => {
+  if (isAxiosError(err)) {
+    return err.response?.data?.message || err.message || fallback;
+  }
+  if (err instanceof Error) return err.message || fallback;
+  return fallback;
+};
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -51,11 +63,13 @@ function LoginForm() {
       }
 
       router.push("/dashboard");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
       setError(
-        err.response?.data?.message ||
+        extractErrorMessage(
+          err,
           "Login gagal. Periksa email dan password."
+        )
       );
     } finally {
       setIsLoading(false);
@@ -76,17 +90,15 @@ function LoginForm() {
           localStorage.setItem("user", JSON.stringify(user));
         }
         router.push("/dashboard");
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error(err);
-        setError(
-          err.response?.data?.message || "Google Login gagal."
-        );
+        setError(extractErrorMessage(err, "Google Login gagal."));
       } finally {
         setIsLoading(false);
       }
     },
     onError: () => {
-      setError("Google Login Failed");
+      setError("Google Login gagal.");
     },
   });
 
